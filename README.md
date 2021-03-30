@@ -1,0 +1,2 @@
+# AutomationTRNSYS
+To run several simulations with the STD TRNSYS without adding parameters between each execution, I developped a Python program. The goal of the script is to take the data from an .xlsx file, write it in a .deck file readable buy TRNSYS and execute it. There is also a part that trace curves from the results of the simulation.  The Python code is very specific to the studied case and the TRNSYS model but I believe it can be uddated and impoved.
