@@ -1,6 +1,9 @@
 from getMonotoneOfHeat import *
 import numpy as np
-#Lis la colonne des puissances de chauffage pour chaque cas
+
+"""
+Define files that represent different scenarios to be compared 
+"""
 FilesNames=["Run1","Run2","Run3","Run4","Run5","Run6","Run7","Run8","Run9","Run10","Run11","Run12","Run13","Run14","Run15"]
 FolderNames=["BaseScenario","SolarGainGlaze","SolarGainshade","TempInf1","TempSup1","VentilationLosses04","VentilationLosses08"]
 
@@ -12,7 +15,7 @@ nbstep = 6
 TotalHeat=[[x for x in range(15)]]*7
 TabVal=[]
 
-
+#For each scenario, read the associated results
 for j in FolderNames:
 	for i in FilesNames:
 		col = readCol(str("C:\\TRNSYS18\\MyProjects\\ParametricStudy\\"+j+"\\"+i+".plt"))
@@ -22,10 +25,9 @@ for j in FolderNames:
 	
 TotalHeat = np.reshape(TabVal,(7,15))
 
-
+#For each simulation return the wanted value of results
 def getHeatValue(Scenario,Simulation):
 	return TotalHeat[DicFolderNames[Scenario]][DicFilesNames[Simulation]]
-
 def get_absvalue_graph(Run):
 	value = [getHeatValue("BaseScenario",Run)/1000,getHeatValue("SolarGainGlaze",Run)/1000,getHeatValue("SolarGainShade",Run)/1000,getHeatValue("TempInf1",Run)/1000,getHeatValue("TempSup1",Run)/1000,getHeatValue("VentilationLosses04",Run)/1000,getHeatValue("VentilationLosses08",Run)/1000]
 	return value
@@ -46,7 +48,7 @@ def plot_figures(mode):
 	legend=["Base","Solar+","Solar-","Tinf","Tsup","Vent04","Vent08"]
 	#plt.figure(figsize=(11.8, 7))
 	plt.figure(figsize=(6,5))
-	plt.rc('xtick', labelsize=6) 
+	plt.rc('xtick', labelsize=10) 
 	num =[13,14,15]
 	for i in range(len(num)):
 		plt.subplot(3,1,i+1)
@@ -63,18 +65,16 @@ def plot_figures(mode):
 			value = get_relativezero_graph("Run"+str(num[i]))
 			axe = plt.gca()
 			axe.yaxis.set_ticks([-25,-15,-5,5,15,25])
-			axe.yaxis.set_ticklabels(["-25","-15","-5","5","15","25"],fontsize=6)
+			axe.yaxis.set_ticklabels(["-25","-15","-5","5","15","25"],fontsize=10)
 			axe.set_ylim(-35, 35)
-			plt.ylabel("Relative diff (%)",fontsize=6)
+			plt.ylabel("Relative diff (%)",fontsize=10)
 		#print(value)
 		plt.bar(legend,value)
 		plt.scatter(legend,value,marker='+',s=5,color='red')
 		
-		plt.gcf().subplots_adjust(wspace = 0.5, hspace = 0.5)
-		plt.title("Renovation case "+str(i+1),fontsize=8)
+		plt.gcf().subplots_adjust(wspace = 0.5, hspace = 0.6)
+		plt.title("Renovation case "+str(i+1),fontsize=13)
 	plt.savefig("C:\\TRNSYS18\\Automatisation\\CumulativeCurves\\ParametricStudy"+str(mode)+".pdf")
 	plt.show()
 
 plot_figures(3)
-
-#print(TotalHeat)
