@@ -6,7 +6,6 @@ nbstep = 6
 #fileName = "SecondSimulation\\MultiBlock1C2.plt"
 
 
-
 def play_curve(fileName,filepng):
 	Pt = readCol(fileName,6)
 	Phmoy = intoHourly(Pt,nbstep)
@@ -15,7 +14,6 @@ def play_curve(fileName,filepng):
 	sPdmoy = sortPdmoy(Pdmoy)
 	#sPhmoy = sortPhmoy(Phmoy)
 	traceMonotonous(sPdmoy,filepng)
-
 
 def traceMonotonous(MeanPow,file):
 	x = [x for x in range(len(MeanPow))]
@@ -26,42 +24,52 @@ def traceMonotonous(MeanPow,file):
 	plt.savefig(file)
 	#plt.show()
 
-def readCol(name):#lis les valeurs de puissance par pas de simulation
+def readCol(name):#read the power values at each simulation time step
 	Pt = []
 	numcol = 6
-	file =open(name,"r")#ouvre en lecture
+	file =open(name,"r")
 	lines = file.readlines()
-	time = len(lines)-2#nb d'itération totale avec un pas de 10min
+	time = len(lines)-2#total number of simulation for a 10min time step
 	for i in range(time):
-		sepLine = lines[i+2].split()#sépare les ligne du fichier
-		Pt.append(sepLine[numcol-1])#Récupère le 6e élément de chaque ligne (Heatingsng)
+		sepLine = lines[i+2].split()
+		Pt.append(sepLine[numcol-1])#Get Heatingsng
 	file.close()#ferme
 	return Pt
-#print(Pt)
 
-def intoHourly(Pt,nbstep):#avoir une puissance moyenne sur une heure
+def readColQ(name):
+	Pt = []
+	numcol = 8
+	file =open(name,"r")
+	lines = file.readlines()
+	time = len(lines)-2#total number of simulation for a 10min time step
+	for i in range(time):
+		sepLine = lines[i+2].split()#Get Heatingsng
+	file.close()
+	return Pt
+
+def intoHourly(Pt,nbstep):#Get an averaged power on an hour 
 	h=0
 	Phmoy = []
-	while h<52560:#nombre d'itération (6*nb heure dans l'année)
+	while h<52560:#Number of iteration in a year 
 		somme = 0
-		for m in range(nbstep):#somme les puissance sur une heure
+		for m in range(nbstep):#sum the power on an hour
 			somme += float(Pt[h+m])
-		Phmoy.append(somme/nbstep)#ajoute la puissance moyenne sur l'heure dans Phmoy
+		Phmoy.append(somme/nbstep)
 		h+=nbstep
 	return Phmoy
 
-def intoDaily(Phmoy,nbday):#avoir une puissance moyenne sur une journée
+def intoDaily(Phmoy,nbday):#Get an averaged power on a day 
 	d=0
 	Pdmoy = []
 	while d<8760:
 		somme=0
-		for n in range(nbday):
+		for n in range(nbday):#Sum the power on a day
 			somme+=Phmoy[d+n]
 		Pdmoy.append(somme/nbday)
-		d+=24#avoir une puissance moyenne sur un mois
+		d+=24
 	return Pdmoy
 
-def sortPdmoy(Pdmoy):#trier par ordre décroissant de puissance
+def sortPdmoy(Pdmoy):#Sort by decreasing order of power (day)
 	sPdmoy = Pdmoy.copy()
 	for i in range(len(Pdmoy)):
 		for j in range(len(Pdmoy)):
@@ -72,7 +80,7 @@ def sortPdmoy(Pdmoy):#trier par ordre décroissant de puissance
 				sPdmoy[j]= b
 	return sPdmoy
 
-def sortPhmoy(Phmoy):#trier par ordre décroissant de puissance
+def sortPhmoy(Phmoy):#Sort by decreasing order of power (hour)
 	sPhmoy = Phmoy.copy()
 	for i in range(len(Phmoy)):
 		for j in range(len(Phmoy)):
@@ -82,27 +90,3 @@ def sortPhmoy(Phmoy):#trier par ordre décroissant de puissance
 				sPhmoy[i]= a
 				sPhmoy[j]= b
 	return sPhmoy
-
-def getTotalHeatConsumption(Power):
-	return Power
-	
-
-
-
-# def getDurationOfPower():#temps d'usage pour chaque puissance
-# 	v = 7#nombre de valeur de puissance moyenne différentes sur 1h
-# 	for c in range(v):#créer un tableau contenant les différentes valeurs de puissance
-# 		value.append(c*(power/nbstep))
-# 		tab.append(0)
-# 	for i in range(len(Phmoy)):#Conter le nombre de répétition dans Phmoy
-# 		for j in range(v):
-# 			if Phmoy[i]==value[j]:
-# 				tab[j]+=1
-# 	for h in range(len(Pdmoy)):
-# 		for k in range(v):
-# 			if Pdmoy[h]==value[k]:
-# 				tabd[k]+=1
-
-
-
-
